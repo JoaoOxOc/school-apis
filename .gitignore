@@ -12,6 +12,7 @@ project.lock.json
 *.user
 *.userosscache
 *.sln.docstates
+chainofchangessomysql*
 
 # Build results
 [Dd]ebug/
@@ -31,7 +32,8 @@ msbuild.wrn
 # Visual Studio 2015
 .vs/
 
-# Angular x.x
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
 # compiled output
 /dist
 /tmp
@@ -48,6 +50,7 @@ msbuild.wrn
 *.launch
 .settings/
 *.sublime-workspace
+appsettings.json
 
 # IDE - VSCode
 .vscode/*
@@ -69,3 +72,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/SingleSignon/Frontend/IdentityUserManagement/node_modules/*
+/.vs/CentralAPIs/DesignTimeBuild/.dtbcache
+/.vs/CentralAPIs/v16/Server/sqlite3/storage.ide
+/chainofchangemysql/*
