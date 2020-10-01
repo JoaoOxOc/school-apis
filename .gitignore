@@ -71,7 +71,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
-/SingleSignon/Frontend/IdentityUserManagement/node_modules/*
+*/node_modules/*
 /.vs/CentralAPIs/DesignTimeBuild/.dtbcache
 /.vs/CentralAPIs/v16/Server/sqlite3/storage.ide
 /chainofchangemysql/*
