@@ -4,11 +4,14 @@ EXPOSE 80
 EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /SingleSignon
-COPY ["SingleSignon/Frontend/SingleSignonPage/SingleSignonPage.csproj", "Frontend/SingleSignonPage/"]
-RUN dotnet restore "Frontend/SingleSignonPage/SingleSignonPage.csproj"
-COPY SingleSignon/ .
-WORKDIR "/SingleSignon/Frontend/SingleSignonPage"
+WORKDIR /src
+COPY ["SingleSignon/Frontend/SingleSignonPage/SingleSignonPage.csproj", "SingleSignon/Frontend/SingleSignonPage/"]
+COPY ["SingleSignon/Backend/UserServiceDatabase/UserServiceDatabase.csproj", "SingleSignon/Backend/UserServiceDatabase/"]
+COPY ["Shared/Utils/Utils.csproj", "Shared/Utils/"]
+COPY ["Shared/Entities/Entities.csproj", "Shared/Entities/"]
+RUN dotnet restore "SingleSignon/Frontend/SingleSignonPage/SingleSignonPage.csproj"
+COPY . .
+WORKDIR "/src/SingleSignon/Frontend/SingleSignonPage"
 RUN dotnet build "SingleSignonPage.csproj" -c Release -o /app/build
 
 FROM build AS publish

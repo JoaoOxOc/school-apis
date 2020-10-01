@@ -1,17 +1,60 @@
 {
   "ReRoutes": [
     {
-      "DownstreamPathTemplate": "/api/user",
+      "DownstreamPathTemplate": "/api/logs",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "userservice",
+          "Host": "loggingservice",
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/user",
+      "UpstreamPathTemplate": "/api/logs",
       "UpstreamhttpMethod": [ "Get" ],
-      "Key": "validade"
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "logs_api",
+        "AllowedScopes": [ "logs_api.edit", "logs_api.read" ]
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/logs/testing",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "loggingservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/logs/testing",
+      "UpstreamhttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "logs_api",
+        "AllowedScopes": [ "logs_api.edit", "logs_api.read" ]
+      },
+      "AddHeadersToRequest": {
+        "Audience": "Claims[aud] > value",
+        "Scopes": "Claims[scope] > value"
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/api/institutions",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "institutionsservice",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/institutions",
+      "UpstreamhttpMethod": [ "Get" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "institution_api",
+        "AllowedScopes": [ "institution_api.read", "institution_api.edit" ]
+      },
+      "AddHeadersToRequest": {
+        "Audience": "Claims[aud] > value",
+        "Scopes": "Claims[scope] > value"
+      }
     }
   ],
 

@@ -22,7 +22,7 @@ export class SettingsService {
         // App Settings
         // -----------------------------------
         this.app = {
-            name: "JP Project",
+            name: "Chain of Change",
             description: "User Management UI",
             year: ((new Date()).getFullYear()),
             docLoaded: false,

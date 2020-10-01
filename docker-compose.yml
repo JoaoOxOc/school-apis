@@ -1,4 +1,5 @@
-version: '3.4'
+version: '3.5'
+
 
 services:
     gatewayapi:
@@ -10,12 +11,62 @@ services:
         ports:
             # "80:80"
             #- "443:443"
-            - "3000:443"
+            - "3000:80"
         build:
             context: .
             dockerfile: GatewayAPI/Dockerfile
+        networks:
+          - school_bridge
 
+    #############################
+    # Database
+    #############################
+    chainofchangemysql:
+      image: mysql
+      container_name: chainofchangemysql
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      ports:
+        - "3308:3306"
+      environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_USER: jp
+          MYSQL_DATABASE: coc_institutions_db
+          MYSQL_PASSWORD: 10203040
+      volumes:
+        - ./chainofchangemysql:/var/lib/mysql
+      networks:
+          - school_bridge
 
+    #############################
+    # LoggingService
+    #############################
+    loggingservice:
+        image: loggingservice
+        restart: always
+        build:
+          context: .
+          dockerfile: APIServices/LoggingService/Dockerfile
+        networks:
+          - school_bridge
+
+    #############################
+    # InstitutionsService
+    #############################
+    institutionsservice:
+        image: institutionsservice
+        restart: always
+        build:
+          context: .
+          dockerfile: APIServices/InstitutionsService/Dockerfile
+        environment: 
+            ASPNETCORE_ENVIRONMENT: Development
+            CUSTOMCONNSTR_DefaultConnection: "server=chainofchangemysql;port=3306;database=coc_institutions_db;user=jp;password=10203040"
+        networks:
+          - school_bridge
+
+    #############################
+    # SSO images
     #############################
     # Database
     #############################
@@ -24,14 +75,18 @@ services:
       container_name: ssomysql
       command: --default-authentication-plugin=mysql_native_password
       restart: always
-      expose: 
-        - "3306"
+      ports:
+        - "3306:3306"
       environment:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_USER: jp
-          MYSQL_DATABASE: jpproject
+          MYSQL_DATABASE: chainofchangeproject
           MYSQL_PASSWORD: 10203040
-    
+      volumes:
+        - ./chainofchangessomysql:/var/lib/mysql
+      networks:
+          - school_bridge
+
     #############################
     # Server SSO
     #############################
@@ -46,17 +101,19 @@ services:
         environment: 
             ASPNETCORE_ENVIRONMENT: Development
             ASPNETCORE_URLS: http://+:5001
-            CUSTOMCONNSTR_SSOConnection: "server=ssomysql,port=3306;database=jpproject;user=jp;password=10203040"
+            CUSTOMCONNSTR_SSOConnection: "server=ssomysql;port=3306;database=chainofchangeproject;user=jp;password=10203040"
             ApplicationSettings:EnableExternalProviders: "false" # Because Auth url is http://singlesignonpage (modified by host to point to 127.0.0.1), then Google and Facebook reject it.
             ApplicationSettings:DatabaseType: MySql
-            ApplicationSettings:DefaultUser: bruno
-            ApplicationSettings:DefaultPass: Pa$$word123
-            ApplicationSettings:DefaultEmail: bhdebrito@gmail.com
+            ApplicationSettings:DefaultUser: Joao
+            ApplicationSettings:DefaultPass: School12345
+            ApplicationSettings:DefaultEmail: joao.almeida.viseu@gmail.com
             ApplicationSettings:UserManagementURL: http://localhost:4400
             ApplicationSettings:IS4AdminUi: http://localhost:4300
             ApplicationSettings:ResourceServerURL: http://localhost:5002
             ApplicationSettings:ShowDefaultUserPass: "true"
             CertificateOptions:Type: Temporary
+        networks:
+          - school_bridge
 
     # #############################
     # # Management API
@@ -72,9 +129,11 @@ services:
         environment: 
             ASPNETCORE_ENVIRONMENT: "Development"
             ASPNETCORE_URLS: http://+
-            CUSTOMCONNSTR_SSOConnection: "server=ssomysql,port=3306;database=jpproject;user=jp;password=10203040"
+            CUSTOMCONNSTR_SSOConnection: "server=ssomysql;port=3306;database=chainofchangeproject;user=jp;password=10203040"
             ApplicationSettings:Authority: "http://singlesignonpage:5001"
             ApplicationSettings:DatabaseType: MySql
+        networks:
+          - school_bridge
 
     #############################
     # User management UI
@@ -85,7 +144,8 @@ services:
         build: 
           context: .
           dockerfile: ssousers.dockerfile
-
+        networks:
+          - school_bridge
           
     #############################
     # Admin UI
@@ -96,7 +156,8 @@ services:
         build: 
           context: .
           dockerfile: ssoadmin-ui.dockerfile
-
+        networks:
+          - school_bridge
 
     school-sso-proxy:
         container_name: school-sso-proxy
@@ -112,3 +173,10 @@ services:
             - 'userservice'
             - 'identityusermanagement'
             - 'singlesignonpage'
+        networks:
+          - school_bridge
+
+networks:
+    school_bridge:
+        name: school_bridge
+        driver: bridge

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using JPProject.Domain.Core.ViewModels;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,7 +9,7 @@ namespace UserService.Configuration
     {
         public static IServiceCollection ConfigureCors(this IServiceCollection services, IConfiguration configuration)
         {
-            string[] corsUrl = configuration.GetValue<string[]>("ApplicationSettings:Cors");
+            string[] corsUrl = configuration.GetSection("ApplicationSettings:Cors").Get<string[]>();
             //services.AddCors(options => options.AddPolicy("AllowAnyOrigin", builder => builder.WithOrigins("http://webapi.descobrirsps.lan", "http://descobrirsps.lan").SetIsOriginAllowed((host) => true).AllowAnyMethod().AllowAnyHeader().WithExposedHeaders(new string[] { "X-Total-Count", "X-Challenge-Status", "X-Event-Type", "X-Upload-Count" }))); services.AddCors(options =>
             services.AddCors(options =>
             {

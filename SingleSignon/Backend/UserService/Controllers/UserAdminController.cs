@@ -49,19 +49,12 @@ namespace UserService.Controllers
         [HttpGet, Route("")]
         public async Task<ActionResult<ListOf<UserListViewModel>>> List([Range(1, 50)] int? limit = 10, [Range(1, int.MaxValue)] int? offset = 0, string search = null)
         {
-            var users = await _userManageAppService.SearchUsers(new UserFindByEmailNameUsername(search) { Limit = limit, Offset = offset });
-            var usersByClaims = await _userManageAppService.SearchUsersByClaims(new SearchUserByClaim() { Value = search });
-
-
-            var usersFinal = users.Collection.ToList();
-            usersFinal.AddRange(usersByClaims.Collection);
-
-            var collectionOfUsers = new ListOf<UserListViewModel>(usersFinal, usersFinal.Count);
+            var users = await _userManageAppService.SearchUsersByProperties(new UserFindByProperties(search) { Limit = limit, Offset = offset });
 
             // Truncate data for non admins
             if (!User.IsInRole("Administrator") && !User.HasClaim(c => c.Type == "is4-manager"))
             {
-                foreach (var ir in collectionOfUsers.Collection)
+                foreach (var ir in users.Collection)
                 {
                     if (_user.Username == ir.UserName)
                         continue;
@@ -254,6 +247,7 @@ namespace UserService.Controllers
             model.ClearSensitiveData();
             return ResponsePost("UserData", "Account", null, model);
         }
+
 
     }
 }

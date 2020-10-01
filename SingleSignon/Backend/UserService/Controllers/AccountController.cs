@@ -40,7 +40,7 @@ namespace UserService.Controllers
         [HttpGet("profile")]
         public async Task<ActionResult<UserViewModel>> UserData()
         {
-            
+
             var user = await _userAppService.FindByUsernameAsync(_systemUser.Username);
             return ResponseGet(user);
         }

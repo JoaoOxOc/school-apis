@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using UserServiceDatabase.Context;
+using System.Threading.Tasks;
 
 namespace SingleSignonPage
 {
@@ -89,6 +90,8 @@ namespace SingleSignonPage
             services
                 .ConfigureSso<AspNetUser>()
                 .AddSsoContext<SsoContext>()
+                // If your ASP.NET Identity has additional fields, you can remove this line and implement IIdentityFactory<TUser> and IRoleFactory<TUser>
+                // theses interfaces will able you to intercept Register / Update Flows from User and Roles
                 .AddDefaultAspNetIdentityServices();
 
             // Configure Federation gateway (external logins), such as Facebook, Google etc
@@ -96,6 +99,9 @@ namespace SingleSignonPage
 
             // Adding MediatR for Domain Events and Notifications
             services.AddMediatR(typeof(Startup));
+
+            // Add configuration mappers
+            services.Configure<IdentityServerConfig>(Configuration.GetSection("IdentityServerConfig"));
 
             // .NET Native DI Abstraction
             RegisterServices(services);
@@ -140,6 +146,7 @@ namespace SingleSignonPage
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+            //Task.WaitAll(DbMigrationHelpers.EnsureSeedData(app.ApplicationServices));
         }
 
         private void RegisterServices(IServiceCollection services)

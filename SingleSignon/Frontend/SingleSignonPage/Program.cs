@@ -16,7 +16,7 @@ namespace SingleSignonPage
         static readonly LoggerProviderCollection Providers = new LoggerProviderCollection();
         public static void Main(string[] args)
         {
-            Console.Title = "JP Project - Server SSO";
+            Console.Title = "Chain of Change - Server SSO";
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
@@ -24,7 +24,7 @@ namespace SingleSignonPage
                 .MinimumLevel.Override("System", LogEventLevel.Warning)
                 .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
                 .Enrich.FromLogContext()
-                .WriteTo.File(@"jpProject_sso_log-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 5)
+                .WriteTo.File(@"chainchange_sso_log-.txt", rollingInterval: RollingInterval.Day, retainedFileCountLimit: 5)
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}{NewLine}", theme: AnsiConsoleTheme.Literate)
                 .WriteTo.Providers(Providers)
                 .CreateLogger();
