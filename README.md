@@ -10,6 +10,8 @@
 ## ToDo
 
 - Merge nginx files (root, singlesignonUI projects) into just one file - the dockerfiles must be reconfigured
+- For cloud kubernetes, remove Nginx since it will use the ingress controller
+- Connect DB's to digitalocean managed database: https://sudonull.com/post/108-Working-with-the-Managed-Databases-service-from-Digital-Ocean-in-NET-Core
 
 ## Project with Docker
 
