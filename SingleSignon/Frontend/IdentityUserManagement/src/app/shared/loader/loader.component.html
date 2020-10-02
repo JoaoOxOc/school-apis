@@ -1,0 +1,24 @@
+<div class="ie-flex-fix">
+    <div class="main-loader" *ngIf="showMain$ | async">
+        
+        <div class="spinner">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+    </div>
+</div>
+
+<div class="loader" [ngStyle]="{'position': isInsideElement ? '' : 'absolute',
+                                    'width': isInsideElement ? 'inherit' : '100%',
+                                    'left': isInsideElement ? '0 auto' : '0'}" *ngIf="show$ | async" >
+    <svg [ngClass]="isInsideElement ? 'material-spinner-inside' : 'material-spinner'" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+        
+        <text *ngIf="showPercentage$ | async" class="text" x="50%" y="50%" fill="black" text-anchor="middle" alignment-baseline="middle">{{loadPercentage$ | async}}%</text>
+        <g class="inner">
+            <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </g>
+    </svg>
+</div>

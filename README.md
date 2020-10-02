@@ -1,17 +1,17 @@
 # school-apis
 
-## Project for the management of platforms related to The Chain of Change 
+## Project for the maangement of platforms related to The Chain of Change 
 
 ### using SSO projects from: 
 - https://github.com/brunohbrito/JPProject.IdentityServer4.AdminUI
 - https://github.com/brunohbrito/JPProject.IdentityServer4.SSO
 - https://github.com/brunohbrito/MongoDB-RepositoryUoWPatterns
 
-## Todo
+## ToDo
 
-- Inser Moodle as 1 microservice - https://github.com/moodlehq/moodle-docker
-- Integrate Moodle with SSO project - https://docs.moodle.org/dev/Authentication_plugins
-- Deploy all microservices to the same pod on kubernetes: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
+- Merge nginx files (root, singlesignonUI projects) into just one file - the dockerfiles must be reconfigured
+- For cloud kubernetes, remove Nginx since it will use the ingress controller
+- Connect DB's to digitalocean managed database: https://sudonull.com/post/108-Working-with-the-Managed-Databases-service-from-Digital-Ocean-in-NET-Core
 
 ## Project with Docker
 

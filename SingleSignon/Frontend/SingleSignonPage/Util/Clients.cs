@@ -75,6 +75,33 @@ namespace SingleSignonPage.Util
                     }
                 },
                 /*
+                 * Postman for testing - OpenID Connect implicit flow client
+                 */
+                new Client {
+                    ClientId = "postman-api",
+                    ClientName = "Postman Test Client",
+                    AllowedGrantTypes = GrantTypes.ClientCredentials,
+                    AllowAccessTokensViaBrowser = false,
+                    RequireConsent = true,
+                    RequirePkce = false,
+                    AllowPlainTextPkce = false,
+                    RequireClientSecret = false,
+                    AccessTokenType = AccessTokenType.Jwt,
+                    RedirectUris =new[] { "https://www.getpostman.com/oauth2/callback" },
+                    AllowedCorsOrigins = { "https://www.getpostman.com" },
+                    PostLogoutRedirectUris =  { "https://www.getpostman.com" },
+                    EnableLocalLogin = true,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "logs_api.edit",
+                        "institution_api.read",
+                        "institution_api.edit"
+                    }
+                },
+                /*
                  * Swagger
                  */
                 new Client

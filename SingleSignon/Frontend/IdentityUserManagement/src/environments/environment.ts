@@ -10,5 +10,5 @@ export const environment = {
   ResourceServer: "https://localhost:5002/",
   AuthorityUri:  "https://localhost:5000",
   RequireHttps: false,
-  Uri: "http://localhost:4200"
+  Uri: "http://localhost:4400"
 };

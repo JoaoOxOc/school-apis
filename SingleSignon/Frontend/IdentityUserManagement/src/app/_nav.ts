@@ -6,7 +6,7 @@ export const navItems = [
     { title: true, name: "History" },
     { name: "Logs", url: "/user/history", icon: "icon-clock" },
     {
-        name: "JP Project",
+        name: "Chain of Change",
         url: "https://github.com/brunohbrito/JP-Project",
         icon: "icon-cloud-download",
         class: "mt-auto",

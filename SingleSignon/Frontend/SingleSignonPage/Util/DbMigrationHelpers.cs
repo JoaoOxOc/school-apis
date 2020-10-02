@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using System;
 using System.IO;
 using System.Linq;
@@ -44,10 +45,14 @@ namespace SingleSignonPage.Util
 
                 await DbHealthChecker.TestConnection(ssoContext);
 
-                if (!env.IsDevelopment())
-                    return;
+                var ssoVersion = ssoContext.GlobalConfigurationSettings.FirstOrDefault(w => w.Key == "SSO:Version");
+                SsoVersion.Current = new Version(ssoVersion?.Value ?? "3.1.0");
+
+                //if (!env.IsDevelopment())
+                //    return;
 
                 ssoContext.Database.EnsureCreated();
+                ssoContext.Database.Migrate();
 
                 await EnsureSeedIdentityServerData(ssoContext, configuration);
                 await EnsureSeedIdentityData(userManager, roleManager, configuration);
@@ -57,9 +62,6 @@ namespace SingleSignonPage.Util
 
         private static async Task EnsureSeedGlobalConfigurationData(SsoContext context, IConfiguration configuration, IWebHostEnvironment env)
         {
-            var ssoVersion = context.GlobalConfigurationSettings.FirstOrDefault(w => w.Key == "SSO:Version");
-            SsoVersion.Current = new Version(ssoVersion?.Value ?? "3.1.0");
-
             if (!context.GlobalConfigurationSettings.Any())
             {
                 await context.GlobalConfigurationSettings.AddAsync(new GlobalConfigurationSettings("SendEmail", configuration.GetSection("EmailConfiguration:SendEmail").Value, false, false));
@@ -89,11 +91,11 @@ namespace SingleSignonPage.Util
                 var resetPasswordEmail = File.ReadAllText(Path.Combine(env.ContentRootPath, @"Assets/templates/reset-password-email.html"));
                 var template = File.ReadAllText(Path.Combine(env.ContentRootPath, @"Assets/templates/default-template.html"));
 
-                await context.Emails.AddAsync(new Email(newUserEmail, "Welcome to JP Project - Confirm your e-mail", new Sender("jpteam@jpproject.net", "JP Team"), EmailType.NewUser, null));
-                await context.Emails.AddAsync(new Email(newUserEmail, "Welcome to JP Project - Confirm your e-mail", new Sender("jpteam@jpproject.net", "JP Team"), EmailType.NewUserWithoutPassword, null));
-                await context.Emails.AddAsync(new Email(resetPasswordEmail, "JP Project - Reset Password", new Sender("jpteam@jpproject.net", "JP Team"), EmailType.RecoverPassword, null));
+                await context.Emails.AddAsync(new Email(newUserEmail, "Welcome to Chain of Change - Confirm your e-mail", new Sender("joao.almeida.viseu@outlook.pt", "JP Team"), EmailType.NewUser, null));
+                await context.Emails.AddAsync(new Email(newUserEmail, "Welcome to Chain of Change - Confirm your e-mail", new Sender("joao.almeida.viseu@outlook.pt", "JP Team"), EmailType.NewUserWithoutPassword, null));
+                await context.Emails.AddAsync(new Email(resetPasswordEmail, "Chain of Change - Reset Password", new Sender("joao.almeida.viseu@outlook.pt", "JP Team"), EmailType.RecoverPassword, null));
 
-                await context.Templates.AddRangeAsync(new Template(template, "JP Team", "default-template", Users.GetEmail(configuration)));
+                await context.Templates.AddRangeAsync(new Template(template, "Chain of Change", "default-template", Users.GetEmail(configuration)));
 
                 await context.SaveChangesAsync();
             }
@@ -123,8 +125,16 @@ namespace SingleSignonPage.Util
 
             if (SsoVersion.Current == Version.Parse("3.1.1"))
             {
-                ssoVersion = context.GlobalConfigurationSettings.FirstOrDefault(w => w.Key == "SSO:Version");
+                var ssoVersion = context.GlobalConfigurationSettings.FirstOrDefault(w => w.Key == "SSO:Version");
                 ssoVersion.Update("3.2.0", true, false);
+                SsoVersion.Current = new Version(ssoVersion.Value);
+                await context.SaveChangesAsync();
+            }
+
+            if (SsoVersion.Current == Version.Parse("3.2.0"))
+            {
+                var ssoVersion = context.GlobalConfigurationSettings.FirstOrDefault(w => w.Key == "SSO:Version");
+                ssoVersion.Update("3.2.2", true, false);
                 SsoVersion.Current = new Version(ssoVersion.Value);
                 await context.SaveChangesAsync();
             }
@@ -163,6 +173,7 @@ namespace SingleSignonPage.Util
             if (result.Succeeded)
             {
                 await userManager.AddClaimAsync(user, new Claim("is4-rights", "manager"));
+                await userManager.AddClaimAsync(user, new Claim("admin-rights", "manager"));
                 await userManager.AddClaimAsync(user, new Claim("username", Users.GetUser(configuration)));
                 await userManager.AddClaimAsync(user, new Claim("email", Users.GetEmail(configuration)));
                 await userManager.AddToRoleAsync(user, "Administrator");
@@ -174,37 +185,49 @@ namespace SingleSignonPage.Util
         /// </summary>
         private static async Task EnsureSeedIdentityServerData(SsoContext context, IConfiguration configuration)
         {
-            if (!context.Clients.Any())
+            #region clients
+
+            foreach (var client in Clients.GetAdminClient(configuration).ToList())
             {
-                foreach (var client in Clients.GetAdminClient(configuration).ToList())
+                if (context.Clients.FirstOrDefault(s => s.ClientId == client.ClientId) == null)
                 {
                     await context.Clients.AddAsync(client.ToEntity());
                 }
-
-                await context.SaveChangesAsync();
             }
 
-            if (!context.IdentityResources.Any())
-            {
-                var identityResources = ClientResources.GetIdentityResources().ToList();
+            await context.SaveChangesAsync();
 
-                foreach (var resource in identityResources)
+            #endregion
+
+            #region ClientResources
+
+            var identityResources = ClientResources.GetIdentityResources().ToList();
+
+            foreach (var resource in identityResources)
+            {
+                if (context.IdentityResources.FirstOrDefault(s => s.Name == resource.Name) == null)
                 {
                     await context.IdentityResources.AddAsync(resource.ToEntity());
                 }
-
-                await context.SaveChangesAsync();
             }
 
-            if (!context.ApiResources.Any())
+            await context.SaveChangesAsync();
+
+            #endregion
+
+            #region ApiResources
+
+            foreach (var resource in ClientResources.GetApiResources(configuration).ToList())
             {
-                foreach (var resource in ClientResources.GetApiResources().ToList())
+                if (context.ApiResources.FirstOrDefault(s => s.Name == resource.Name) == null)
                 {
                     await context.ApiResources.AddAsync(resource.ToEntity());
                 }
-
-                await context.SaveChangesAsync();
             }
+
+            await context.SaveChangesAsync();
+
+            #endregion
         }
 
     }

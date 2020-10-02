@@ -4,15 +4,22 @@ using System.Text;
 
 namespace Utils.Enums
 {
+    public static class RabbitTags
+    {
+        public static string LOGAPI = "logAPI";
+
+        public static string USERAPI = "userAPI";
+    }
+
     public static class RabbitExchanges
     {
-        public static string GDPR = "gdpr";
+        public static string LOGS = "logs";
     }
 
     public static class RabbitQueues
     {
         public static string MailerQ = "mailer.queue";
-        public static string LoggerQ = "logger.queue";
+        public static string LoggerApiQ = "logger.api.queue";
 
         public static string DmsSettingQ = "dmssetting.queue";
         public static string DmsCloneQ = "dms.clone.queue";

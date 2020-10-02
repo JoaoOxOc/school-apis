@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GatewayAPI.Configuration;
+using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Ocelot.Administration;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -28,7 +31,13 @@ namespace GatewayAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddOcelot(Configuration);
+
+            Action<IdentityServerAuthenticationOptions> ocelotOptions = IdentityServerAuthentication.ConfigureIdentityServerAllowedApiResources(services, Configuration);
+
+            // Cors request
+            services.ConfigureCors(Configuration);
+
+            services.AddOcelot(Configuration).AddAdministration("/administration", ocelotOptions);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +53,8 @@ namespace GatewayAPI
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

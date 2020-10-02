@@ -10,6 +10,6 @@ export const environment = {
     ResourceServer: "http://localhost:5002/",
     AuthorityUri:  "http://singlesignonpage:5001",
     RequireHttps: false,
-    Uri: "http://localhost:4200"
+    Uri: "http://localhost:4400"
   };
   

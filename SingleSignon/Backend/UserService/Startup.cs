@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using UserServiceDatabase.Context;
+using UserService.Services.RabbitMQ;
 
 namespace UserService
 {
@@ -115,6 +116,7 @@ namespace UserService
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Adding dependencies from another layers (isolated from Presentation)
+            services.TryAddSingleton<IRabbitMQConnection, RabbitMQConnection>();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace SingleSignonPage.Util
     {
         public static string GetUser(IConfiguration configuration)
         {
-            return configuration.GetValue<string>("ApplicationSettings:DefaultUser") ?? "bruno";
+            return configuration.GetValue<string>("ApplicationSettings:DefaultUser") ?? "joao";
         }
         public static string GetPassword(IConfiguration configuration)
         {
@@ -14,7 +14,7 @@ namespace SingleSignonPage.Util
         }
         public static string GetEmail(IConfiguration configuration)
         {
-            return configuration.GetValue<string>("ApplicationSettings:DefaultEmail") ?? "bhdebrito@gmail.com";
+            return configuration.GetValue<string>("ApplicationSettings:DefaultEmail") ?? "joao.almeida.viseu@gmail.com";
         }
     }
 }
