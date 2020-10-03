@@ -5,14 +5,22 @@ using System.Threading.Tasks;
 
 namespace SingleSignonPage.Util
 {
-    public class Resource
+    public class IdentityServerResource
     {
         public string Key { get; set; }
         public string Name { get; set; }
         public string ApiSecret { get; set; }
     }
+    public class IdentityServerClient
+    {
+        public string Key { get; set; }
+        public string Name { get; set; }
+        public string ClientSecret { get; set; }
+    }
+
     public class IdentityServerConfig
     {
-        public List<Resource> Resources { get; set; }
+        public List<IdentityServerClient> Clients { get; set; }
+        public List<IdentityServerResource> Resources { get; set; }
     }
 }

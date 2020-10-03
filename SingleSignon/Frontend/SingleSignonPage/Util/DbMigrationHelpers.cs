@@ -188,7 +188,7 @@ namespace SingleSignonPage.Util
         {
             #region clients
 
-            foreach (var client in Clients.GetAdminClient(configuration).ToList())
+            foreach (var client in Clients.GetAdminClient(configuration, configOptions).ToList())
             {
                 if (context.Clients.FirstOrDefault(s => s.ClientId == client.ClientId) == null)
                 {

@@ -2,6 +2,7 @@
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SingleSignonPage.Util
 
@@ -9,9 +10,9 @@ namespace SingleSignonPage.Util
     public static class Clients
     {
 
-        public static IEnumerable<Client> GetAdminClient(IConfiguration configuration)
+        public static IEnumerable<Client> GetAdminClient(IConfiguration configuration, IConfigurationOptions configOptions)
         {
-
+            IdentityServerConfig configs = configOptions.getIdentityServerConfig();
             return new List<Client>
             {
                 /*
@@ -85,7 +86,12 @@ namespace SingleSignonPage.Util
                     RequireConsent = true,
                     RequirePkce = false,
                     AllowPlainTextPkce = false,
-                    RequireClientSecret = false,
+                    RequireClientSecret = true,
+                    // secret for authentication
+                    ClientSecrets =
+                    {
+                        new Secret(configs.Clients.Where(x => x.Key == "postman_api").FirstOrDefault().ClientSecret.Sha256())
+                    },
                     AccessTokenType = AccessTokenType.Jwt,
                     RedirectUris =new[] { "https://www.getpostman.com/oauth2/callback" },
                     AllowedCorsOrigins = { "https://www.getpostman.com" },
