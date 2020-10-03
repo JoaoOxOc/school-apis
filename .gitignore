@@ -30,7 +30,7 @@ msbuild.err
 msbuild.wrn
 
 # docker files
-/docker-compose.override.yml
+*.override.yml
 
 # Visual Studio 2015
 .vs/
