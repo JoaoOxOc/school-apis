@@ -77,4 +77,5 @@ node_modules/
 /chainofchangemysql/*
 
 # docker files
-docker-compose.*
+docker-compose.yml
+docker-compose.override.yml
