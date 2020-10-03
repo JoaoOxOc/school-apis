@@ -75,3 +75,6 @@ node_modules/
 /.vs/CentralAPIs/DesignTimeBuild/.dtbcache
 /.vs/CentralAPIs/v16/Server/sqlite3/storage.ide
 /chainofchangemysql/*
+
+# docker files
+docker-compose.*
