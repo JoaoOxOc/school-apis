@@ -47,9 +47,6 @@ services:
         build:
           context: .
           dockerfile: APIServices/LoggingService/Dockerfile
-        environment: 
-            ASPNETCORE_ENVIRONMENT: Development
-            CUSTOMCONNSTR_DefaultConnection: "mongodb://localhost:27017/logDB"
         networks:
           - school_bridge
 
