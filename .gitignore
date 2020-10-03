@@ -29,6 +29,10 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
+# docker files
+docker-compose.yml
+docker-compose.override.yml
+
 # Visual Studio 2015
 .vs/
 
@@ -75,7 +79,3 @@ node_modules/
 /.vs/CentralAPIs/DesignTimeBuild/.dtbcache
 /.vs/CentralAPIs/v16/Server/sqlite3/storage.ide
 /chainofchangemysql/*
-
-# docker files
-docker-compose.yml
-docker-compose.override.yml
