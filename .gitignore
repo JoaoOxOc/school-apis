@@ -29,6 +29,9 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
+# docker files
+*.override.yml
+
 # Visual Studio 2015
 .vs/
 

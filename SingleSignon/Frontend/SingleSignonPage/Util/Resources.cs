@@ -2,6 +2,8 @@
 using IdentityServer4;
 using IdentityServer4.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,9 +33,9 @@ namespace SingleSignonPage.Util
             };
         }
 
-        public static IEnumerable<ApiResource> GetApiResources(IConfiguration configuration)
+        public static IEnumerable<ApiResource> GetApiResources(IConfigurationOptions configOptions)
         {
-            IdentityServerConfig identityServerConfig = configuration.GetValue<IdentityServerConfig>("IdentityServerConfig");
+            IdentityServerConfig configs = configOptions.getIdentityServerConfig();
             return new[]
             {
                 new ApiResource
@@ -41,7 +43,7 @@ namespace SingleSignonPage.Util
                                     Name = "jp_api",
                                     DisplayName = "JP API",
                                     Description = "OAuth2 Server Management Api",
-                                    ApiSecrets = { new Secret(identityServerConfig.Resources.Where(x => x.Key == "jp_api").FirstOrDefault().ApiSecret.Sha256()) },
+                                    ApiSecrets = { new Secret(configs.Resources.Where(x => x.Key == "jp_api").FirstOrDefault().ApiSecret.Sha256()) },
 
                                     UserClaims =
                                     {
@@ -76,7 +78,7 @@ namespace SingleSignonPage.Util
                                     Name = "logs_api",
                                     DisplayName = "Logging API",
                                     Description = "Logging Service Api",
-                                    ApiSecrets = { new Secret(identityServerConfig.Resources.Where(x => x.Key == "logs_api").FirstOrDefault().ApiSecret.Sha256()) },
+                                    ApiSecrets = { new Secret(configs.Resources.Where(x => x.Key == "logs_api").FirstOrDefault().ApiSecret.Sha256()) },
 
                                     UserClaims =
                                     {
@@ -111,7 +113,7 @@ namespace SingleSignonPage.Util
                                     Name = "ocelot_api",
                                     DisplayName = "Ocelot Admin API",
                                     Description = "Ocelot Admin Api",
-                                    ApiSecrets = { new Secret(identityServerConfig.Resources.Where(x => x.Key == "ocelot_api").FirstOrDefault().ApiSecret.Sha256()) },
+                                    ApiSecrets = { new Secret(configs.Resources.Where(x => x.Key == "ocelot_api").FirstOrDefault().ApiSecret.Sha256()) },
 
                                     UserClaims =
                                     {
@@ -146,7 +148,7 @@ namespace SingleSignonPage.Util
                                     Name = "institution_api",
                                     DisplayName = "Institutions Admin API",
                                     Description = "Institutions Admin Api",
-                                    ApiSecrets = { new Secret(identityServerConfig.Resources.Where(x => x.Key == "institution_api").FirstOrDefault().ApiSecret.Sha256()) },
+                                    ApiSecrets = { new Secret(configs.Resources.Where(x => x.Key == "institution_api").FirstOrDefault().ApiSecret.Sha256()) },
 
                                     UserClaims =
                                     {

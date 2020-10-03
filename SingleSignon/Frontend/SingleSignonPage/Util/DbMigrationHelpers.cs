@@ -42,6 +42,7 @@ namespace SingleSignonPage.Util
                 var ssoContext = scope.ServiceProvider.GetRequiredService<SsoContext>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UserIdentity>>();
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<RoleIdentity>>();
+                var configOptions = scope.ServiceProvider.GetRequiredService<IConfigurationOptions>();
 
                 await DbHealthChecker.TestConnection(ssoContext);
 
@@ -54,7 +55,7 @@ namespace SingleSignonPage.Util
                 ssoContext.Database.EnsureCreated();
                 ssoContext.Database.Migrate();
 
-                await EnsureSeedIdentityServerData(ssoContext, configuration);
+                await EnsureSeedIdentityServerData(ssoContext, configuration, configOptions);
                 await EnsureSeedIdentityData(userManager, roleManager, configuration);
                 await EnsureSeedGlobalConfigurationData(ssoContext, configuration, env);
             }
@@ -183,7 +184,7 @@ namespace SingleSignonPage.Util
         /// <summary>
         /// Generate default clients, identity and api resources
         /// </summary>
-        private static async Task EnsureSeedIdentityServerData(SsoContext context, IConfiguration configuration)
+        private static async Task EnsureSeedIdentityServerData(SsoContext context, IConfiguration configuration, IConfigurationOptions configOptions)
         {
             #region clients
 
@@ -217,7 +218,7 @@ namespace SingleSignonPage.Util
 
             #region ApiResources
 
-            foreach (var resource in ClientResources.GetApiResources(configuration).ToList())
+            foreach (var resource in ClientResources.GetApiResources(configOptions).ToList())
             {
                 if (context.ApiResources.FirstOrDefault(s => s.Name == resource.Name) == null)
                 {

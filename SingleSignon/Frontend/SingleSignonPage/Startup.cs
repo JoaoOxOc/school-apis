@@ -154,6 +154,7 @@ namespace SingleSignonPage
             // Adding dependencies from another layers (isolated from Presentation)
             services.AddScoped<IEventSink, IdentityServerEventStore>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<IConfigurationOptions, ConfigurationOptions>();
         }
 
         /// <summary>
